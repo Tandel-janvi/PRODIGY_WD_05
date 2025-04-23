@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Dashboard</title>
+    <link rel="stylesheet" href="./Style.css">
+    <style>
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Weather Dashboard</h1>
+        <input type="text" id="cityInput" placeholder="Enter City Name" />
+        <button onclick="getWeather()">Get Weather</button>
+
+        <div id="weatherResult" class="weather-result"></div>
+    </div>
+
+    <script>
+        async function getWeather() {
+            const city = document.getElementById('cityInput').value;
+            if (!city) {
+                alert('Please enter a city name');
+                return;
+            }
+
+            const apiKey = 'be38e7640b67d78a46d4447cf10000fc';
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.cod === 200) {
+                    document.getElementById('weatherResult').innerHTML = `
+                        <div><strong>City:</strong> ${data.name}</div>
+                        <div><strong>Temperature:</strong> ${data.main.temp} °C</div>
+                        <div><strong>Weather:</strong> ${data.weather[0].description}</div>
+                        <div><strong>Humidity:</strong> ${data.main.humidity}%</div>
+                        <div><strong>Wind Speed:</strong> ${data.wind.speed} m/s</div>
+                    `;
+                } else {
+                    document.getElementById('weatherResult').innerHTML = `<div>City not found. Please try again.</div>`;
+                }
+            } catch (error) {
+                console.log(error);
+                document.getElementById('weatherResult').innerHTML = `<div>Unable to fetch weather data. Please try again later.</div>`;
+            }
+        }
+    </script>
+</body>
+</html>
